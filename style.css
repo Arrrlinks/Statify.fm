@@ -1,0 +1,46 @@
+body{
+    font-family: CircularSpTitle, CircularSpTitle-Tall, CircularSp-Arab, CircularSp-Hebr, CircularSp-Cyrl, CircularSp-Grek, CircularSp-Deva, Helvetica Neue, helvetica, arial, Hiragino Kaku Gothic Pro, Meiryo, MS Gothic, serif;
+}
+
+.currentlyPlaying{
+    position: relative;
+    background-color: #121212;
+    color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+}
+
+.currentlyPlaying img{
+    width:120px;
+    height: 120px;
+    border-radius: 8px;
+    position: relative;
+    top: 50%;
+    left: 1%;
+    transform: translateY(-50%);
+    transition: 0.3s;
+}
+
+.currentlyPlaying img:hover{
+    transform: translateY(-50%) scale(1.05);
+
+}
+
+.currentlyPlayingInfo{
+    line-height: 10px;
+    position: relative;
+    top: 10%;
+    left: 1%;
+}
+
+.currentlyPlayingInfo h2{
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.currentlyPlayingInfo h3{
+    font-size: 1rem;
+    font-weight: 300;
+}
