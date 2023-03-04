@@ -19,19 +19,21 @@ function getCurrentlyPlaying() {
         if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
             html += "<div class='currentlyPlaying'>";
-            html += "<a href='" + data.item.uri + "' target='_blank'>";
+            html += "<a href='" + data.item.uri + "'>";
             html += "<img id='albumImage' alt='album_cover' src='" + data.item.album.images[0].url+ "'>";
             html += "</a>";
             html += "<div class='currentlyPlayingInfo'>";
-            html += "<a class='name' href='" + data.item.uri + "' target='_blank'>";
+            html += "<a class='name' href='" + data.item.uri + "'>";
             html += "<h2 class='name'>" + data.item.name + "</h2>";
             html += "</a><br>";
+            html += "<span class='artist'>";
             for (let i = 0; i < data.item.artists.length; i++) {
-                html += "<span>" + data.item.artists[i].name + "</span>";
+                html += "<a href='"+ data.item.artists[i].uri +"'>" + data.item.artists[i].name + "</a>";
                 if (i < data.item.artists.length - 1) {
                     html += ", ";
                 }
             }
+            html += "</span>";
             html += "<br><br><br>";
             html += "<div id='progress_bar'>";
             html += "<span>" + Math.floor(data.progress_ms / 1000 / 60) + ":" + (Math.floor(data.progress_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.progress_ms / 1000 % 60) + " </span>";
@@ -58,13 +60,16 @@ function getCurrentlyPlaying() {
                 const toHex = "#" + ((1 << 24) + (dominantColor[0] << 16) + (dominantColor[1] << 8) + dominantColor[2]).toString(16).slice(1);
                 const bgColor = document.querySelector(".currentlyPlaying");
                 const nameColor = document.querySelector(".name");
+                const artistColor = document.querySelector(".artist a");
                 bgColor.style.backgroundColor = toHex;
                 if (dominantColor[0] < 50 && dominantColor[1] < 50 && dominantColor[2] < 50) {
                     bgColor.style.color = "white";
                     nameColor.style.color = "white";
+                    artistColor.style.color = "white";
                 } else {
                     bgColor.style.color = "black";
                     nameColor.style.color = "black";
+                    artistColor.style.color = "black";
                 }
             });
 
