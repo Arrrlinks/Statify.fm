@@ -10,6 +10,7 @@ body{
     border-radius: 12px;
     display: grid;
     grid-template-columns: 130px 1fr;
+    transition: .2s;
 }
 
 .currentlyPlaying img{
@@ -35,9 +36,16 @@ body{
     left: 1%;
 }
 
-.currentlyPlayingInfo h2{
+.name{
     font-size: 1.5rem;
     font-weight: 400;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.name:hover{
+    text-decoration: underline;
 }
 
 .currentlyPlayingInfo h3{
