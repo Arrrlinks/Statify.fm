@@ -60,16 +60,19 @@ function getCurrentlyPlaying() {
                 const toHex = "#" + ((1 << 24) + (dominantColor[0] << 16) + (dominantColor[1] << 8) + dominantColor[2]).toString(16).slice(1);
                 const bgColor = document.querySelector(".currentlyPlaying");
                 const nameColor = document.querySelector(".name");
-                const artistColor = document.querySelector(".artist a");
                 bgColor.style.backgroundColor = toHex;
                 if (dominantColor[0] < 50 && dominantColor[1] < 50 && dominantColor[2] < 50) {
                     bgColor.style.color = "white";
                     nameColor.style.color = "white";
-                    artistColor.style.color = "white";
+                    for(let i = 0; i < document.querySelectorAll(".artist a").length; i++) {
+                        document.querySelectorAll(".artist a")[i].style.color = "white";
+                    }
                 } else {
                     bgColor.style.color = "black";
                     nameColor.style.color = "black";
-                    artistColor.style.color = "black";
+                    for(let i = 0; i < document.querySelectorAll(".artist a").length; i++) {
+                        document.querySelectorAll(".artist a")[i].style.color = "black";
+                    }
                 }
             });
 
