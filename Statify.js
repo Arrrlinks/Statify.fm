@@ -1,3 +1,5 @@
+let previousTrackId = null;
+
 // Récupérer le jeton d'accès à partir de l'URL
 const hashParams = {};
 let e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -42,8 +44,30 @@ function getCurrentlyPlaying() {
             const progressBar = document.getElementById("progress");
             progressBar.setAttribute("value", data.progress_ms);
             progressBar.setAttribute("max", data.item.duration_ms);
-            const backgroundColor = data.item.album.images[0].dominant_color;
-            const albumImage = document.getElementById("albumImage");
+            // Création d'une instance de ColorThief
+            const colorThief = new ColorThief();
+            // Récupération de l'image à partir de son URL
+            const imageUrl = data.item.album.images[0].url;
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.src = imageUrl;
+            // Attente du chargement complet de l'image
+            img.addEventListener('load', function() {
+                // Récupération de la couleur dominante
+                const dominantColor = colorThief.getColor(img);
+                const toHex = "#" + ((1 << 24) + (dominantColor[0] << 16) + (dominantColor[1] << 8) + dominantColor[2]).toString(16).slice(1);
+                const bgColor = document.querySelector(".currentlyPlaying");
+                const nameColor = document.querySelector(".name");
+                bgColor.style.backgroundColor = toHex;
+                if (dominantColor[0] < 50 && dominantColor[1] < 50 && dominantColor[2] < 50) {
+                    bgColor.style.color = "white";
+                    nameColor.style.color = "white";
+                } else {
+                    bgColor.style.color = "black";
+                    nameColor.style.color = "black";
+                }
+            });
+
         } else {
             console.log("Erreur de chargement des données");
         }
@@ -66,7 +90,10 @@ function getCurrentlyPlayingTime() {
             const progressBar = document.getElementById("progress");
             progressBar.setAttribute("value", data.progress_ms);
             progressBar.setAttribute("max", data.item.duration_ms);
-            if (data.progress_ms <= 3000 ) {
+            const currentTrackId = data.item.id;
+            if (currentTrackId !== previousTrackId) {
+                // La musique a changé, faire quelque chose
+                previousTrackId = currentTrackId;
                 getCurrentlyPlaying();
             }
         } else {
