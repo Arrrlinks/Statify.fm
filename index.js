@@ -1,5 +1,6 @@
 const client_id = '319eee2dc4eb4a9e8a957959d8e2d229';
-const redirect_uri = 'http://localhost:63342/Statify/callback.html';
+const redirect_uri = 'https://fmstatify.netlify.app/callback';
+//const redirect_uri = 'http://localhost:63342/Statify/callback.html';
 const auth_endpoint = 'https://accounts.spotify.com/authorize';
 const scopes = 'user-read-private user-read-email playlist-read-private';
 
