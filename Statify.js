@@ -77,6 +77,7 @@ function getCurrentlyPlaying() {
             });
 
         } else {
+            window.location.href = "https://statifyfm.netlify.app"
             console.log("Erreur de chargement des données");
         }
     };
@@ -105,6 +106,7 @@ function getCurrentlyPlayingTime() {
                 getCurrentlyPlaying();
             }
         } else {
+            window.location.href = "https://statifyfm.netlify.app"
             console.log("Erreur de chargement des données");
         }
     };
