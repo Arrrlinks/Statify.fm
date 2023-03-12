@@ -37,15 +37,16 @@ function getCurrentlyPlaying() {
             html += "<br><br><br>";
             html += "<div id='progress_bar'>";
             html += "<span>" + Math.floor(data.progress_ms / 1000 / 60) + ":" + (Math.floor(data.progress_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.progress_ms / 1000 % 60) + " </span>";
-            html += "<progress id='progress' value='" + data.progress_ms + "' max='" + data.item.duration_ms + "'></progress>";
-            html += "<span> " + Math.floor(data.item.duration_ms / 1000 / 60) + ":" + (Math.floor(data.item.duration_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.item.duration_ms / 1000 % 60) + "</span>";
+            html +="<span> / </span>"
+            html += "<span> " + Math.floor(data.item.duration_ms / 1000 / 60) + ":" + (Math.floor(data.item.duration_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.item.duration_ms / 1000 % 60) + "</span><br>";
+            html += "<div class=\"progress-bar\">" +
+                "  <div id=\"progress\" class=\"progress-bar-inner\" style=\"width: calc(100% * {{ data.progress_ms }} / {{ data.item.duration_ms }})\">" +
+                "  </div>" +
+                "</div>";
             html +="</div>";
             html += "</div>";
             html += "</div>";
             document.getElementById("Cplaying").innerHTML = html;
-            const progressBar = document.getElementById("progress");
-            progressBar.setAttribute("value", data.progress_ms);
-            progressBar.setAttribute("max", data.item.duration_ms);
             // Création d'une instance de ColorThief
             const colorThief = new ColorThief();
             // Récupération de l'image à partir de son URL
@@ -57,22 +58,12 @@ function getCurrentlyPlaying() {
             img.addEventListener('load', function() {
                 // Récupération de la couleur dominante
                 const dominantColor = colorThief.getColor(img);
-                const toHex = "#" + ((1 << 24) + (dominantColor[0] << 16) + (dominantColor[1] << 8) + dominantColor[2]).toString(16).slice(1);
-                const bgColor = document.querySelector(".currentlyPlaying");
-                const nameColor = document.querySelector(".name");
-                bgColor.style.backgroundColor = toHex;
-                if (dominantColor[0] < 50 && dominantColor[1] < 50 && dominantColor[2] < 50) {
-                    bgColor.style.color = "white";
-                    nameColor.style.color = "white";
-                    for(let i = 0; i < document.querySelectorAll(".artist a").length; i++) {
-                        document.querySelectorAll(".artist a")[i].style.color = "white";
-                    }
+                document.querySelector(".currentlyPlaying").style.backgroundColor = "#" + ((1 << 24) + (dominantColor[0] << 16) + (dominantColor[1] << 8) + dominantColor[2]).toString(16).slice(1);
+                const r = document.querySelector(':root')
+                if (dominantColor[0] < 50 || dominantColor[1] < 50 || dominantColor[2] < 50) {
+                    r.style.setProperty('--color', 'white');
                 } else {
-                    bgColor.style.color = "black";
-                    nameColor.style.color = "black";
-                    for(let i = 0; i < document.querySelectorAll(".artist a").length; i++) {
-                        document.querySelectorAll(".artist a")[i].style.color = "black";
-                    }
+                    r.style.setProperty('--color', 'black');
                 }
             });
 
@@ -92,12 +83,13 @@ function getCurrentlyPlayingTime() {
         if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
             html += "<span>" + Math.floor(data.progress_ms / 1000 / 60) + ":" + (Math.floor(data.progress_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.progress_ms / 1000 % 60) + " </span>";
-            html += "<progress id='progress' value='" + data.progress_ms + "' max='" + data.item.duration_ms + "'></progress>";
-            html += "<span> " + Math.floor(data.item.duration_ms / 1000 / 60) + ":" + (Math.floor(data.item.duration_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.item.duration_ms / 1000 % 60) + "</span>";
+            html +="<span> / </span>"
+            html += "<span> " + Math.floor(data.item.duration_ms / 1000 / 60) + ":" + (Math.floor(data.item.duration_ms / 1000 % 60) < 10 ? "0" : "") + Math.floor(data.item.duration_ms / 1000 % 60) + "</span><br>";
+            html += "<div class=\"progress-bar\">" +
+                "<div id=\"progress\" class=\"progress-bar-inner\" style='width:" + 100 * data.progress_ms/data.item.duration_ms + "%'>" +
+                "</div>" +
+                "</div>";
             document.getElementById("progress_bar").innerHTML = html;
-            const progressBar = document.getElementById("progress");
-            progressBar.setAttribute("value", data.progress_ms);
-            progressBar.setAttribute("max", data.item.duration_ms);
             const currentTrackId = data.item.id;
             if (currentTrackId !== previousTrackId) {
                 // La musique a changé, faire quelque chose
