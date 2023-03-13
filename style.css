@@ -1,7 +1,3 @@
-:root{
-    --color: #fff;
-}
-
 body{
     font-family: CircularSpTitle, CircularSpTitle-Tall, CircularSp-Arab, CircularSp-Hebr, CircularSp-Cyrl, CircularSp-Grek, CircularSp-Deva, Helvetica Neue, helvetica, arial, Hiragino Kaku Gothic Pro, Meiryo, MS Gothic, serif;
     background-image: url("imgs/background3.png");
@@ -121,4 +117,99 @@ body{
 
 .progress-bar-inner.progress {
     width: 0;
+}
+
+#latest-releases{
+    position: absolute;
+    transition: 0.3s;
+    width: 100%;
+    max-height: 300px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    overflow:hidden;
+    white-space: nowrap;
+}
+
+.new-container{
+    flex: 0 0 auto; /* pour que chaque élément prenne sa largeur naturelle */
+    margin-right: 20px; /* pour ajouter un espace entre chaque élément */
+    animation: scroll-left-right 60s linear infinite;
+}
+
+.new {
+    width: 500px;
+    position: relative;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 3px 8px;
+    background: #5e5e5e;
+    color: white;
+    margin-bottom: 10px;
+    border-radius: 100px;
+}
+
+.new img{
+    width:120px;
+    height: 120px;
+    border-radius: 100px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.3s;
+}
+
+.new img:hover{
+    transform: translateY(-50%) scale(1.05);
+}
+
+.new-info{
+    line-height: 10px;
+    position: relative;
+    top: 33%;
+    left: 1%;
+}
+
+.new-title{
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+}
+
+.new-title:hover{
+    text-decoration: underline;
+}
+
+.new-artist a{
+    font-size: 1rem;
+    font-weight: 300;
+    text-decoration: none;
+    display: inline-block;
+    color: white;
+}
+
+.new-artist a:hover{
+    text-decoration: underline;
+}
+
+@keyframes scroll-left-right {
+    0% {
+        transform: translateX(0);
+    }
+    12.5% {
+        transform: translateX(-670%);
+    }
+    25% {
+        transform: translateX(-670%);
+    }
+    87.5    % {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }

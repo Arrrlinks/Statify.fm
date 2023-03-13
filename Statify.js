@@ -1,5 +1,5 @@
 let previousTrackId = null;
-
+let latestRelease = null;
 // Récupérer le jeton d'accès à partir de l'URL
 const hashParams = {};
 let e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -107,9 +107,8 @@ function getCurrentlyPlayingTime() {
 getCurrentlyPlaying();
 setInterval(getCurrentlyPlayingTime, 1000);
 
-
 const xhr1 = new XMLHttpRequest();
-xhr1.open('GET', 'https://api.spotify.com/v1/me/following?type=artist&limit=50', true);
+xhr1.open('GET', 'https://api.spotify.com/v1/me/following?type=artist&limit=50', true); // limite à 50 artistes par page
 xhr1.setRequestHeader('Authorization', 'Bearer ' + access_token);
 xhr1.setRequestHeader('Content-Type', 'application/json');
 
@@ -129,65 +128,62 @@ xhr1.onreadystatechange = function() {
             xhr1.setRequestHeader('Content-Type', 'application/json');
             xhr1.send();
         } else {
-            // Fonction qui récupère le dernier album/ep/single sorti pour un artiste
-            function getLatestRelease(artistId) {
-                const xhr2 = new XMLHttpRequest();
-                xhr2.open('GET', `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single,compilation&market=FR`, true);
-                xhr2.setRequestHeader('Authorization', 'Bearer ' + access_token);
-                xhr2.setRequestHeader('Content-Type', 'application/json');
-                xhr2.onreadystatechange = function() {
-                    if (xhr2.readyState === 4 && xhr2.status === 200) {
-                        const data = JSON.parse(xhr2.responseText);
-                        if (data.items.length > 0) {
-                            const latestRelease = data.items.reduce((latest, current) => {
-                                if (!latest.release_date || latest.release_date < current.release_date) {
-                                    return current;
-                                } else {
-                                    return latest;
-                                }
-                            });
-                            function sortByDate(names) {
-                                // Trie la liste de noms en fonction de leur date (du plus récent au plus ancien)
-                                names.sort(function(a, b) {
-                                    // Convertit les dates de chaînes de caractères en objets Date
-                                    const dateA = new Date(a[0]);
-                                    const dateB = new Date(b[0]);
+            // Tous les artistes ont été récupérés, on peut faire quelque chose avec la liste des IDs
+            const latestReleases = [];
 
-                                    // Compare les dates et retourne le résultat du tri
-                                    if (dateA > dateB) {
-                                        return -1;
-                                    } else if (dateA < dateB) {
-                                        return 1;
+            artistIds.forEach(artistId => {
+                const xhr2 = new XMLHttpRequest();
+
+                xhr2.onreadystatechange = function() {
+                    if (this.readyState === 4) {
+                        if (this.status === 200) {
+                            const data = JSON.parse(this.responseText);
+                            if (data.items.length > 0) {
+                                let latestRelease = data.items.reduce((latest, current) => {
+                                    if (!latest.release_date || latest.release_date < current.release_date) {
+                                        return current;
                                     } else {
-                                        return 0;
+                                        return latest;
                                     }
                                 });
-
-                                // Retourne la liste de noms triée
-                                return names;
+                                latestReleases.push(latestRelease);
                             }
-                            const names = [  ['2022-10-01', 'Album A'],
-                                ['2023-01-15', 'Album B'],
-                                ['2023-02-28', 'Album C'],
-                                ['2022-11-23', 'Album D'],
-                            ];
-                            console.log(names);
-                            const sortedNames = sortByDate(names);
-                            console.log(sortedNames);
+                        } else {
+                            console.error("Erreur lors de la récupération des dernières sorties de l'artiste avec l'ID", artistId);
+                        }
 
+                        if (latestReleases.length === artistIds.length-1) {
+                            // Toutes les sorties ont été récupérées, trier les sorties par date de sortie décroissante
+                            latestReleases.sort().reverse();
+                            latestReleases.sort((a, b) => (a.release_date < b.release_date) ? 1 : -1);
+                            latestReleases.splice(10); // Ne garder que les 10 dernières sorties
+                            for(let i=0; i<latestReleases.length; i++) {
+                                let html = "<div class=\"new-container\">";
+                                html += "<div class=\"new\">";
+                                html += "<a href='"+ latestReleases[i].uri +"'><img src=\"" + latestReleases[i].images[1].url + "\" alt=\"Album cover\"></a>";
+                                html += "<div class=\"new-info\">";
+                                html += "<a class=\"new-title\" href='"+ latestReleases[i].uri +"'>" + latestReleases[i].name + "</a><br><br><br>";
+                                html += "<span class=\"new-artist\">"
+                                for (let k = 0; k < latestReleases[i].artists.length; k++) {
+                                    html += "<a href='"+ latestReleases[i].artists[k].uri +"'>" + latestReleases[i].artists[k].name + "</a>";
+                                    if (k < latestReleases[i].artists.length - 1) {
+                                        html += ", ";
+                                    }
+                                }
+                                html += "</div>";
+                                html += "</div>";
+                                html += "</div>";
+                                html += "</div>";
+                                document.getElementById("latest-releases").innerHTML += html;
+                            }
                         }
                     }
-
                 };
+                xhr2.open("GET", `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single,compilation&market=FR`);
+                xhr2.setRequestHeader("Authorization", `Bearer ${access_token}`);
                 xhr2.send();
-            }
-
-            // Récupère les 10 derniers albums/ep/singles sortis pour chaque artiste
-            for (let i = 0; i < artistIds.length; i++) {
-                getLatestRelease(artistIds[i]);
-            }
+            });
         }
     }
 };
 xhr1.send();
-
