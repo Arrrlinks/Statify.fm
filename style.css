@@ -5,9 +5,9 @@
 body{
     font-family: CircularSpTitle, CircularSpTitle-Tall, CircularSp-Arab, CircularSp-Hebr, CircularSp-Cyrl, CircularSp-Grek, CircularSp-Deva, Helvetica Neue, helvetica, arial, Hiragino Kaku Gothic Pro, Meiryo, MS Gothic, serif;
     background-image: url("imgs/background3.png");
-    margin: 937px 0 0 0;
-    background-size: 2000px;
+    background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     background-position: center;
 }
 
